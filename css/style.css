@@ -1,0 +1,83 @@
+/* Ivrit Word Game styles. Colors are set once here and reused everywhere. */
+:root {
+  --bg: #f3f5f9; --surface: #ffffff; --fg: #17203a; --muted: #5d6782; --line: #d9deea;
+  --accent: #1f4fb8; --accent-soft: #e3ebfb;
+  --good: #1d7a4a; --good-soft: #e1f3e8; --warn: #a8580c; --warn-soft: #fbeedd;
+  --display: "Rubik", system-ui, sans-serif; --body: "Source Sans 3", system-ui, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f1424; --surface: #171e33; --fg: #e7ebf5; --muted: #9aa4c0; --line: #2a3350;
+    --accent: #7ea2ff; --accent-soft: #1f2b4f;
+    --good: #5fd197; --good-soft: #163527; --warn: #f2b26b; --warn-soft: #3a2a15;
+    color-scheme: dark;
+  }
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg); font: 17px/1.5 var(--body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 28px 40px;
+}
+.wrap { max-width: 540px; margin: 0 auto; display: grid; gap: 20px; }
+h1, h2 { font-family: var(--display); margin: 0; line-height: 1.15; text-wrap: balance; }
+h1 { font-size: 1.6rem; font-weight: 700; }
+h2 { font-size: 1.25rem; font-weight: 500; }
+p { margin: 0; }
+button { font: inherit; }
+
+.top { display: flex; justify-content: space-between; align-items: end; gap: 12px; flex-wrap: wrap; }
+.eyebrow { font: 600 .75rem/1 var(--body); letter-spacing: .09em; text-transform: uppercase; color: var(--accent); }
+.muted { color: var(--muted); }
+.stats { display: flex; gap: 14px; font-size: .9rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.stats b { color: var(--fg); }
+
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 22px; display: grid; gap: 14px; }
+
+/* Topic and direction pickers */
+.choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+.choice { display: flex; gap: 10px; align-items: center; border: 1.5px solid var(--line); border-radius: 12px; padding: 12px 14px; cursor: pointer; }
+.choice:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); }
+.choice input { accent-color: var(--accent); width: 18px; height: 18px; margin: 0; }
+.choice small { display: block; color: var(--muted); }
+
+.progress { height: 8px; background: var(--accent-soft); border-radius: 4px; overflow: hidden; }
+.progress div { height: 100%; background: var(--good); width: 0; }
+
+.card {
+  all: unset; box-sizing: border-box; cursor: pointer; display: grid; place-items: center; text-align: center; gap: 10px;
+  min-height: 300px; padding: 28px 22px; background: var(--surface); border: 1px solid var(--line); border-radius: 18px;
+}
+.card:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.prompt-word { font-family: var(--display); font-weight: 700; font-size: clamp(1.8rem, 8vw, 2.6rem); color: var(--accent); line-height: 1.1; overflow-wrap: anywhere; }
+.answer-word { font-family: var(--display); font-weight: 500; font-size: 1.45rem; }
+.note { color: var(--muted); font-size: .95rem; max-width: 36ch; }
+.hint { color: var(--muted); font-size: .9rem; }
+
+.row { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.answers { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.btn { all: unset; box-sizing: border-box; cursor: pointer; text-align: center; font: 600 1rem var(--body); padding: 14px 18px; border-radius: 12px; border: 1.5px solid transparent; }
+.btn:focus-visible { outline: 3px solid var(--fg); outline-offset: 2px; }
+.btn.main { background: var(--accent); color: var(--surface); }
+.btn.ghost { color: var(--accent); border-color: var(--accent); }
+.btn.again { background: var(--warn-soft); color: var(--warn); border-color: var(--warn); }
+.btn.knew { background: var(--good-soft); color: var(--good); border-color: var(--good); }
+.btn[disabled] { opacity: .35; cursor: default; }
+.link { all: unset; cursor: pointer; color: var(--muted); font-size: .9rem; text-decoration: underline; }
+
+.keys { text-align: center; font-size: .82rem; color: var(--muted); }
+kbd { font: inherit; border: 1px solid var(--line); border-radius: 4px; padding: 0 5px; background: var(--surface); }
+
+.done { text-align: center; justify-items: center; }
+.big { font-family: var(--display); font-weight: 700; font-size: 2.6rem; color: var(--good); line-height: 1; }
+.tough { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.chip { background: var(--warn-soft); color: var(--warn); border-radius: 999px; padding: 4px 12px; font-size: .9rem; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .progress div { transition: width .4s ease; }
+  .card.flip { animation: pop .25s ease; }
+  @keyframes pop { from { transform: scale(.97); } to { transform: none; } }
+}
