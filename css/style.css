@@ -104,6 +104,7 @@ a { color: var(--accent); }
 .btn.knew { background: var(--good-soft); color: var(--good); border-color: var(--good); }
 .btn.danger { background: transparent; color: var(--bad); border-color: var(--bad); }
 .btn.small { padding: 8px 12px; font-size: .9rem; }
+.btn.done { background: var(--good-soft); color: var(--good); border-color: var(--good); cursor: default; }
 .btn[disabled] { opacity: .4; cursor: default; }
 .btn .count { background: color-mix(in srgb, currentColor 18%, transparent); border-radius: 999px; padding: 1px 8px; font-size: .85rem; }
 .link { appearance: none; background: none; border: 0; padding: 0; cursor: pointer; color: var(--muted); font-size: .9rem; text-decoration: underline; }

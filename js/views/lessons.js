@@ -36,9 +36,14 @@ function levelHtml(level, isCurrent) {
         </div>
         ${isCurrent ? `<span class="badge on">You're here</span>` : ""}
       </div>
-      ${hasContent ? `<div>${level.topics.map(topicHtml).join("")}</div>`
+      ${hasContent ? `<p class="small muted num">${levelWordCount(level)} of about ${level.words.toLocaleString("en-US")} ${esc(level.code)} words added so far. More topics and words arrive with each update.</p>
+        <div>${level.topics.map(topicHtml).join("")}</div>`
         : `<p class="small muted">${level.topics.map(t => esc(t.name)).join(" · ")}<br>Lessons for this level arrive in later phases.</p>`}
     </section>`;
+}
+
+function levelWordCount(level) {
+  return level.topics.reduce((n, t) => n + wordsInTopic(t.id).length, 0);
 }
 
 function topicHtml(topic) {
@@ -52,7 +57,8 @@ function topicHtml(topic) {
     <div class="topic">
       <div><h3>${esc(topic.name)}</h3><p class="small muted num">${words.length} words · ${Math.round(mastery * 100)}% known${unseen ? ` · ${unseen} new` : ""}</p></div>
       <div class="row">
-        ${unseen ? `<button class="btn small main" data-learn="${topic.id}" data-name="${esc(topic.name)}">Learn</button>` : ""}
+        ${unseen ? `<button class="btn small main" data-learn="${topic.id}" data-name="${esc(topic.name)}">Learn</button>`
+          : `<span class="btn small done" aria-label="All words in this topic learned">✓ Learned</span>`}
         <button class="btn small ghost" data-practise="${topic.id}" data-name="${esc(topic.name)}">Practise</button>
       </div>
       ${bar(mastery, mastery >= 0.8 ? "good" : "")}
