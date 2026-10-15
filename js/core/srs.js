@@ -24,17 +24,21 @@ export function statusOf(item) {
 }
 
 // Apply one answer to an item and return the updated item.
+// A correct answer moves an item up at most once per day, so extra practice
+// can't rush a word to Mastered in one sitting. A mistake always counts.
 export function review(item, correct, today) {
   const it = { ...(item || newItem()) };
+  const alreadyMovedToday = it.last === today && it.box > 0;
   it.seen++;
-  it.last = today;
   if (correct) {
     it.right++;
+    if (alreadyMovedToday) return it;
     it.box = Math.min(5, it.box + 1);
   } else {
     it.wrong++;
     it.box = 1;
   }
+  it.last = today;
   it.due = addDays(today, INTERVALS[it.box]);
   return it;
 }

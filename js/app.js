@@ -7,6 +7,7 @@ import * as practice from "./views/practice.js";
 import * as read from "./views/read.js";
 import * as progress from "./views/progress.js";
 import * as session from "./views/session.js";
+import * as mc from "./views/mc.js";
 
 const VIEWS = { today, lessons, alefbet, practice, read, progress };
 const view = document.getElementById("view");
@@ -23,6 +24,21 @@ const ctx = {
     current = "session";
     markTab(config.returnTo || "practice");
     session.render(view, ctx, config);
+    window.scrollTo(0, 0);
+  },
+  // Start a multiple-choice quiz: { title, questions, returnTo, onDone?, doneLabel?, doneText?, again? }
+  startQuiz(config) {
+    if (!config.questions || !config.questions.length) { ctx.toast("Nothing to practise there yet."); return; }
+    current = "quiz";
+    markTab(config.returnTo || "alefbet");
+    mc.render(view, ctx, config);
+    window.scrollTo(0, 0);
+  },
+  // Show a screen that isn't a tab (like a lesson introduction) under a tab.
+  showScreen(tab, draw) {
+    current = "screen";
+    markTab(tab);
+    draw(view);
     window.scrollTo(0, 0);
   },
   toast(text) {
@@ -54,7 +70,10 @@ function render() {
 }
 
 window.addEventListener("hashchange", () => { render(); window.scrollTo(0, 0); });
-document.addEventListener("keydown", e => { if (current === "session") session.onKey(e); });
+document.addEventListener("keydown", e => {
+  if (current === "session") session.onKey(e);
+  else if (current === "quiz") mc.onKey(e);
+});
 // Tapping the tab you're already on (for example to leave a session) re-opens that tab.
 document.querySelector(".tabbar").addEventListener("click", e => {
   const a = e.target.closest("a");

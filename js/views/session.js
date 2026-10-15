@@ -30,9 +30,18 @@ export function render(v, c, config) {
 function draw() {
   if (!s.queue.length) return finish();
   const w = WORD_BY_ID[s.queue[0]];
-  const dir = getState().settings.direction;
-  const front = dir === "he-en" ? w.tr : w.en;
-  const back = dir === "he-en" ? w.en : w.tr;
+  const { direction: dir, script } = getState().settings;
+  // How the Hebrew side looks, depending on the "How Hebrew is shown" setting.
+  const hebrewBig = script === "tr"
+    ? `<div class="prompt-word">${esc(w.tr)}</div>`
+    : `<div class="prompt-word he" lang="he">${esc(w.he)}</div>${script === "both" ? `<div class="answer-word">${esc(w.tr)}</div>` : ""}`;
+  const englishBig = `<div class="prompt-word">${esc(w.en)}</div>`;
+  const front = dir === "he-en" ? hebrewBig : englishBig;
+  const backMain = dir === "he-en" ? `<div class="answer-word">${esc(w.en)}</div>`
+    : script === "tr" ? `<div class="answer-word">${esc(w.tr)}</div>` : `<div class="answer-word he" lang="he">${esc(w.he)}</div><div class="hint">${esc(w.tr)}</div>`;
+  // Extra line on the back: the form not already shown.
+  const backExtra = script === "tr" ? `<div class="he" lang="he">${esc(w.he)}</div>`
+    : script === "he" && dir === "he-en" ? `<div class="hint">${esc(w.tr)}</div>` : "";
   const root = w.root ? ROOT_BY_ID[w.root] : null;
   const isNew = !getState().items[w.id] || getState().items[w.id].box === 0;
 
@@ -44,10 +53,10 @@ function draw() {
     ${bar(s.done.size / s.total, "good")}
     <button class="card ${s.flipped ? "flip" : ""}" id="card" aria-live="polite">
       ${isNew && !s.flipped ? `<span class="badge on">New word</span>` : ""}
-      <div class="prompt-word">${esc(front)}</div>
+      ${front}
       ${s.flipped ? `
-        <div class="answer-word">${esc(back)}</div>
-        <div class="he" lang="he">${esc(w.he)}</div>
+        ${backMain}
+        ${backExtra}
         ${w.tip ? `<p class="note">${esc(w.tip)}</p>` : ""}
         ${root ? `<p class="hint">Root ${esc(root.tr)} · ${esc(root.meaning)}</p>` : ""}`
       : `<p class="hint">Say the answer out loud, then tap to check</p>`}

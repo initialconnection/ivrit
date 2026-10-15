@@ -17,7 +17,10 @@ function blank() {
     fluency: {},               // date -> score that day
     recent: [],                // last 50 answers, true/false, for accuracy
     goal: null,                // { level, deadline, start }
-    settings: { dailyMinutes: 15, direction: "he-en" }
+    letters: {},               // letter id -> same shape as items
+    vowels: {},                // vowel id -> same shape as items
+    alefbet: { done: [], ladder: {} }, // finished lesson ids; reading ladder rung -> { seen, right }
+    settings: { dailyMinutes: 15, direction: "he-en", script: "tr" }
   };
 }
 
@@ -26,7 +29,7 @@ let state = load();
 function load() {
   try {
     const saved = JSON.parse(localStorage.getItem(KEY));
-    if (saved && saved.v === VERSION) return { ...blank(), ...saved, settings: { ...blank().settings, ...saved.settings } };
+    if (saved && saved.v === VERSION) return merge(saved);
   } catch (e) { /* storage blocked or corrupt: start fresh */ }
   return blank();
 }
@@ -42,22 +45,35 @@ export function today(key = todayKey()) {
   return state.days[key];
 }
 
-// Record one answer for a word. `seconds` = time spent on it (capped by the caller).
-export function recordAnswer(wordId, correct, seconds) {
+// Record one answer. `credits` = what the answer counts toward, as [kind, id] pairs,
+// where kind is "items" (words), "letters" or "vowels". `seconds` = time spent (capped at 60).
+export function recordAnswer(credits, correct, seconds, ladderRung = null) {
   const key = todayKey();
-  const before = state.items[wordId];
-  const after = review(before, correct, key);
-  state.items[wordId] = after;
+  const list = typeof credits === "string" ? [["items", credits]] : credits;
+  for (const [kind, id] of list) {
+    const before = state[kind][id];
+    const after = review(before, correct, key);
+    state[kind][id] = after;
+    if (kind === "items" && (!before || before.box < 3) && after.box >= 3) today(key).learned++;
+  }
+  if (ladderRung) {
+    const r = state.alefbet.ladder[ladderRung] || (state.alefbet.ladder[ladderRung] = { seen: 0, right: 0 });
+    r.seen++;
+    if (correct) r.right++;
+  }
   const day = today(key);
   day.answers++;
   if (correct) day.correct++;
   day.seconds += Math.max(0, Math.min(seconds, 60));
-  if ((!before || before.box < 3) && after.box >= 3) day.learned++;
   state.recent.push(!!correct);
   if (state.recent.length > 50) state.recent.shift();
   state.lastActive = key;
   save();
-  return after;
+}
+
+export function markLessonDone(id) {
+  if (!state.alefbet.done.includes(id)) state.alefbet.done.push(id);
+  save();
 }
 
 export function setGoal(goal) { state.goal = goal; save(); }
@@ -74,8 +90,14 @@ export function importText(text) {
   if (!incoming || incoming.v !== VERSION || typeof incoming.items !== "object") {
     throw new Error("This file isn't an Ivrit backup.");
   }
-  state = { ...blank(), ...incoming, settings: { ...blank().settings, ...incoming.settings } };
+  state = merge(incoming);
   save();
+}
+
+// Fills in anything an older save is missing, so new features work with old progress.
+function merge(saved) {
+  const b = blank();
+  return { ...b, ...saved, settings: { ...b.settings, ...saved.settings }, alefbet: { ...b.alefbet, ...saved.alefbet } };
 }
 
 export function resetAll() { state = blank(); save(); }

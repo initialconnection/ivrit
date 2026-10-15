@@ -41,7 +41,7 @@ Today · Lessons · Alef-Bet · Practice · Read · Progress
 
 ## Build roadmap
 1. **Foundation** (done): data files linked by ID, per-word progress with spaced repetition, fluency score, goal and timeline, six-tab layout, backup
-2. **Letters and reading:** alef-bet lessons, nikud, script switch, letter games, letter/vowel progress
+2. **Letters and reading** (done): alef-bet lessons, nikud, script switch, letter games, letter/vowel progress
 3. **Words and roots:** review queue, root explorer, matching and speed games, Aleph and Bet vocabulary
 4. **Sentences and grammar:** units and lessons, cheat sheets, sentence tiles, Gimel content
 5. **Texts and audio:** reading library, tap-to-translate, audio, listening drills

@@ -46,7 +46,7 @@ export const LEVELS = [
 export const PROGRAM = {
   words: 6000,
   letters: 27,     // 22 letters + 5 final forms
-  vowels: 12,
+  vowels: 13,
   roots: 300,
   grammar: 60,
   texts: 100

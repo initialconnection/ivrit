@@ -15,6 +15,7 @@ export function render(view, ctx) {
     .sort((a, b) => state.items[b.id].wrong - state.items[a.id].wrong).slice(0, 15).map(w => w.id);
   const topics = LEVELS.flatMap(l => l.topics).filter(t => wordsInTopic(t.id).length);
   const dir = state.settings.direction;
+  const script = state.settings.script;
 
   view.innerHTML = `
     ${header("Flashcards", "Practice")}
@@ -48,6 +49,19 @@ export function render(view, ctx) {
     </section>
 
     <section class="panel">
+      <h2>How Hebrew is shown</h2>
+      <p class="small muted">Switch to Hebrew script as your reading improves in the Alef-Bet tab.</p>
+      <div class="choices">
+        <label class="choice"><input type="radio" name="script" value="tr" ${script === "tr" ? "checked" : ""}>
+          <span>English letters<small>Shalom</small></span></label>
+        <label class="choice"><input type="radio" name="script" value="both" ${script === "both" ? "checked" : ""}>
+          <span>Both<small><span class="he" lang="he">שָׁלוֹם</span> + Shalom</small></span></label>
+        <label class="choice"><input type="radio" name="script" value="he" ${script === "he" ? "checked" : ""}>
+          <span>Hebrew script<small><span class="he" lang="he">שָׁלוֹם</span></small></span></label>
+      </div>
+    </section>
+
+    <section class="panel">
       <h2>More games coming</h2>
       <p class="small muted">Matching pairs, speed rounds, word tiles and root families arrive in Phase 3. Every game will count toward the same progress.</p>
     </section>
@@ -63,5 +77,6 @@ export function render(view, ctx) {
     const ids = WORDS.filter(w => chosen.includes(w.topic)).map(w => w.id);
     ctx.startSession({ title: chosen.length === 1 ? topics.find(t => t.id === chosen[0]).name : "Mixed topics", ids, mode: "practice", returnTo: "practice" });
   };
+  view.querySelectorAll('input[name="script"]').forEach(r => r.onchange = () => { setSetting("script", r.value); ctx.toast("Display saved"); });
   view.querySelectorAll('input[name="dir"]').forEach(r => r.onchange = () => { setSetting("direction", r.value); ctx.toast("Card direction saved"); });
 }

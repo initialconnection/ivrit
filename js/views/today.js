@@ -6,6 +6,8 @@ import { plan } from "../core/goal.js";
 import { pickMessage } from "../core/messages.js";
 import { todayKey, addDays, esc, pct, formatDate, plural } from "../core/util.js";
 import { header, bar, dueIds, newIds, changeHtml } from "./shared.js";
+import { ALEFBET_LESSONS } from "../data/alefbet-lessons.js";
+import { nextLessonIndex, dueCount as abDueCount, drillQuestions } from "../core/alefbet.js";
 
 export function render(view, ctx) {
   const state = getState();
@@ -22,6 +24,8 @@ export function render(view, ctx) {
   const due = dueIds(key);
   const fresh = newIds(10);
   const msg = pickMessage({ state, f, goalPlan, streakDays, day, known: knownWords(state), dailyMinutes });
+  const nextAB = nextLessonIndex(state);
+  const abDue = abDueCount(state, key);
   const dateLabel = new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
 
   view.innerHTML = `
@@ -57,6 +61,15 @@ export function render(view, ctx) {
       ${!due.length && fresh.length ? `<p class="small muted">No reviews due right now.</p>` : ""}
     </section>
 
+    <section class="panel">
+      <div class="panel-head"><h2>Alef-Bet</h2><span class="small muted num">${state.alefbet.done.length}/${ALEFBET_LESSONS.length} lessons</span></div>
+      ${bar(state.alefbet.done.length / ALEFBET_LESSONS.length)}
+      <div class="row">
+        ${nextAB !== null ? `<button class="btn ${due.length || fresh.length ? "ghost" : "main"}" id="ab-next">Lesson ${nextAB + 1}: ${esc(ALEFBET_LESSONS[nextAB].title)}</button>` : `<span class="small">All alef-bet lessons done. ✓</span>`}
+        ${abDue ? `<button class="btn ghost" id="ab-review">Review letters <span class="count">${abDue}</span></button>` : ""}
+      </div>
+    </section>
+
     ${goalPlan ? `
     <section class="panel">
       <div class="panel-head"><h2>Your goal</h2><button class="link" id="goal-edit">Change</button></div>
@@ -82,7 +95,11 @@ export function render(view, ctx) {
     const ids = (due.length ? due : Object.keys(state.items).filter(id => state.items[id].box > 0)).slice(0, 10);
     ctx.startSession({ title: "Comeback test", ids, mode: "review", returnTo: "today" });
   };
-  const goalBtn = $("#goal-edit") || $("#goal-set");
+  const abNext = $("#ab-next");
+  if (abNext) abNext.onclick = () => { location.hash = "alefbet"; };
+  const abReview = $("#ab-review");
+  if (abReview) abReview.onclick = () => ctx.startQuiz({ title: "Letter review", questions: drillQuestions("review", state), returnTo: "today", doneLabel: "Review done" });
+  const goalBtn =$("#goal-edit") || $("#goal-set");
   if (goalBtn) goalBtn.onclick = () => { location.hash = "progress"; setTimeout(() => document.getElementById("goal")?.scrollIntoView(), 50); };
 }
 
