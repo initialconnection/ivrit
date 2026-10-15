@@ -98,10 +98,13 @@ function finish(early = false) {
       <h2>Fluency ${changeHtml(gained)}</h2>
       ${completed && s.config.doneText ? `<p>${esc(s.config.doneText)}</p>` : ""}
       <div class="row" style="justify-content:center">
+        ${completed && s.config.next ? `<button class="btn main" id="next-up">${esc(s.config.next.label)} →</button>` : `
         ${s.config.again ? `<button class="btn main" id="again">Go again</button>` : ""}
-        <button class="btn ${s.config.again ? "ghost" : "main"}" id="back">Back to ${s.config.returnTo === "today" ? "Today" : "Alef-Bet"}</button>
+        <button class="btn ${s.config.again ? "ghost" : "main"}" id="back">Back to ${s.config.returnTo === "today" ? "Today" : "Alef-Bet"}</button>`}
       </div>
     </section>`;
+  const nextUp = view.querySelector("#next-up");
+  if (nextUp) { nextUp.onclick = s.config.next.run; nextUp.focus({ preventScroll: true }); return; }
   const again = view.querySelector("#again");
   if (again) again.onclick = () => ctx.startQuiz({ ...s.config, questions: s.config.again() });
   view.querySelector("#back").onclick = () => ctx.go(s.config.returnTo || "alefbet");

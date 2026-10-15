@@ -201,8 +201,11 @@ function openLesson(index, ctx) {
       returnTo: "alefbet",
       onDone: () => markLessonDone(lesson.id),
       doneLabel: `Lesson ${index + 1} complete`,
-      doneText: index + 1 < ALEFBET_LESSONS.length ? `Next up: Lesson ${index + 2}, ${ALEFBET_LESSONS[index + 1].title}.` : "That's the whole alef-bet. Kol ha-kavod!",
-      again: () => lessonQuestions(index)
+      doneText: index + 1 < ALEFBET_LESSONS.length ? "" : "That's the whole alef-bet. Kol ha-kavod!",
+      again: () => lessonQuestions(index),
+      next: index + 1 < ALEFBET_LESSONS.length
+        ? { label: `Next lesson: ${ALEFBET_LESSONS[index + 1].title}`, run: () => openLesson(index + 1, ctx) }
+        : { label: "Back to Alef-Bet", run: () => ctx.go("alefbet") }
     });
   });
 }
