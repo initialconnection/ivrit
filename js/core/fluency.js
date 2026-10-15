@@ -7,6 +7,7 @@ import { LEVELS, PROGRAM } from "../data/levels.js";
 import { strength, statusOf } from "./srs.js";
 import { daysBetween } from "./util.js";
 import { alefbetValue } from "./alefbet.js";
+import { rootsValue } from "./roots.js";
 
 export const AREAS = [
   { id: "vocab", name: "Vocabulary", weight: 40, phase: 1 },
@@ -38,7 +39,7 @@ export function compute(state, today) {
 
   let vocabSum = 0;
   for (const id in state.items) vocabSum += strength(state.items[id], today);
-  const values = { vocab: Math.min(1, vocabSum / PROGRAM.words), alefbet: alefbetValue(state, today) };
+  const values = { vocab: Math.min(1, vocabSum / PROGRAM.words), alefbet: alefbetValue(state, today), roots: rootsValue(state, today) };
 
   const parts = AREAS.map(a => ({ ...a, value: values[a.id] ?? 0, live: a.id in values }));
   const score = parts.reduce((s, p) => s + p.weight * p.value, 0) * factor;

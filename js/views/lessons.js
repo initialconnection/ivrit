@@ -5,6 +5,8 @@ import { esc } from "../core/util.js";
 import { currentLevel } from "../core/fluency.js";
 import { getState } from "../core/store.js";
 import { header, bar, wordsInTopic, topicMastery, newIds } from "./shared.js";
+import { activeRoots } from "../core/roots.js";
+import { openExplorer } from "./roots.js";
 
 export function render(view, ctx) {
   const lvl = currentLevel(getState());
@@ -12,9 +14,15 @@ export function render(view, ctx) {
   view.innerHTML = `
     ${header("Learning path", "Lessons")}
     <p class="muted">Five ulpan levels from Aleph to Hey. Each topic fills up as its words become Known.</p>
+    <section class="panel">
+      <div class="panel-head"><h2>Root explorer</h2><span class="small muted">${activeRoots().length} roots</span></div>
+      <p class="small muted">See how words grow from three-letter roots, and practise whole word families.</p>
+      <div class="row"><button class="btn ghost" id="roots">Open root explorer</button></div>
+    </section>
     ${LEVELS.map(level => levelHtml(level, level.n === lvl.level.n)).join("")}
   `;
 
+  view.querySelector("#roots").onclick = () => openExplorer(ctx, "lessons");
   view.querySelectorAll("[data-learn]").forEach(b => b.onclick = () => {
     const t = b.dataset.learn;
     ctx.startSession({ title: b.dataset.name, ids: newIds(10, t), mode: "learn", returnTo: "lessons" });

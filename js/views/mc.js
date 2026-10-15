@@ -30,7 +30,8 @@ function optionHtml(o, i, q) {
     if (i === q.answer) cls += " right";
     else if (i === s.picked) cls += " wrong";
   }
-  const label = o.he ? `<span class="he" lang="he">${esc(o.he)}</span>` : esc(o.text);
+  const label = (o.he ? `<span class="he" lang="he">${esc(o.he)}</span>` : `<span>${esc(o.text)}</span>`)
+    + (o.sub ? `<small class="${/[\u05D0-\u05EA]/.test(o.sub) ? "he" : ""}">${esc(o.sub)}</small>` : "");
   return `<button class="${cls}" data-i="${i}" ${s.picked !== null ? "disabled" : ""}><kbd>${i + 1}</kbd>${label}</button>`;
 }
 
@@ -49,6 +50,7 @@ function draw() {
     <section class="panel quiz">
       <p class="quiz-prompt">${esc(q.prompt)}</p>
       ${q.show ? `<div class="quiz-show he" lang="he">${esc(q.show)}</div>` : ""}
+      ${q.showLatin ? `<div class="quiz-latin">${esc(q.showLatin)}</div>` : ""}
       <div class="opts ${q.options.some(o => o.he) ? "he-opts" : ""}">${q.options.map((o, i) => optionHtml(o, i, q)).join("")}</div>
       ${answered ? `<div class="feedback ${correct ? "good" : "bad"}" role="status">
           <b>${correct ? "Right!" : "Not quite."}</b> ${esc(q.explain || "")}</div>
@@ -100,7 +102,7 @@ function finish(early = false) {
       <div class="row" style="justify-content:center">
         ${completed && s.config.next ? `<button class="btn main" id="next-up">${esc(s.config.next.label)} →</button>` : `
         ${s.config.again ? `<button class="btn main" id="again">Go again</button>` : ""}
-        <button class="btn ${s.config.again ? "ghost" : "main"}" id="back">Back to ${s.config.returnTo === "today" ? "Today" : "Alef-Bet"}</button>`}
+        <button class="btn ${s.config.again ? "ghost" : "main"}" id="back">Back to ${{ today: "Today", practice: "Practice", lessons: "Lessons" }[s.config.returnTo] || "Alef-Bet"}</button>`}
       </div>
     </section>`;
   const nextUp = view.querySelector("#next-up");

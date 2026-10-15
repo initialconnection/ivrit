@@ -11,7 +11,9 @@ export const LEVELS = [
       { id: "food", name: "Food & home" },
       { id: "numbers", name: "Numbers 1–10" },
       { id: "time", name: "Days & time" },
-      { id: "colours", name: "Colours & clothes" }
+      { id: "colours", name: "Colours & clothes" },
+      { id: "school", name: "School & books" },
+      { id: "verbs", name: "Everyday verbs" }
     ] },
   { n: 2, code: "Bet", cefr: "A2", name: "Elementary", words: 1200,
     canDo: "Talk about your day, past events, family, shopping",

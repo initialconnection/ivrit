@@ -5,6 +5,20 @@ import { LEVELS } from "../data/levels.js";
 import { getState, setSetting } from "../core/store.js";
 import { todayKey, esc } from "../core/util.js";
 import { header, dueIds, newIds, wordsInTopic } from "./shared.js";
+import { startMatch, startSpeed } from "./games.js";
+import { meaningQ } from "../core/roots.js";
+import { openExplorer } from "./roots.js";
+import { shuffle } from "../core/util.js";
+import { WORD_BY_ID } from "../data/words.js";
+
+const fmtTime = ms => { const s = Math.floor(ms / 1000); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`; };
+
+// Studied words first, topped up with new ones.
+function quizWords(n) {
+  const items = getState().items;
+  const studied = shuffle(WORDS.filter(w => items[w.id]?.box > 0));
+  return [...studied, ...newIds(n).map(id => WORD_BY_ID[id])].slice(0, n);
+}
 
 export function render(view, ctx) {
   const state = getState();
@@ -18,7 +32,7 @@ export function render(view, ctx) {
   const script = state.settings.script;
 
   view.innerHTML = `
-    ${header("Flashcards", "Practice")}
+    ${header("Flashcards & games", "Practice")}
 
     <section class="panel">
       <h2>Quick start</h2>
@@ -27,6 +41,17 @@ export function render(view, ctx) {
         <button class="btn ghost" id="learn" ${fresh.length ? "" : "disabled"}>Learn new <span class="count">${fresh.length}</span></button>
         <button class="btn ghost" id="tough" ${tough.length ? "" : "disabled"}>Tough words <span class="count">${tough.length}</span></button>
       </div>
+    </section>
+
+    <section class="panel">
+      <h2>Games</h2>
+      <div class="games">
+        <button class="drill" id="g-match"><b>Matching pairs</b><span>${state.best.match ? "Best " + fmtTime(state.best.match) : "Match words to meanings"}</span></button>
+        <button class="drill" id="g-speed"><b>Speed round</b><span>${state.best.speed ? "Best " + state.best.speed + " right" : "60 seconds, go!"}</span></button>
+        <button class="drill" id="g-quiz"><b>Word quiz</b><span>Pick the right meaning</span></button>
+        <button class="drill" id="g-roots"><b>Root families</b><span>Match words to their roots</span></button>
+      </div>
+      <p class="small muted">Games use words you've studied, plus a few new ones. Every answer counts toward your progress.</p>
     </section>
 
     <section class="panel">
@@ -61,13 +86,17 @@ export function render(view, ctx) {
       </div>
     </section>
 
-    <section class="panel">
-      <h2>More games coming</h2>
-      <p class="small muted">Matching pairs, speed rounds, word tiles and root families arrive in Phase 3. Every game will count toward the same progress.</p>
-    </section>
+
   `;
 
   const $ = sel => view.querySelector(sel);
+  $("#g-match").onclick = () => startMatch(ctx);
+  $("#g-speed").onclick = () => startSpeed(ctx);
+  $("#g-quiz").onclick = () => {
+    const make = () => { const pool = quizWords(10); return pool.map(w => meaningQ(w, WORDS, getState().settings.script)); };
+    ctx.startQuiz({ title: "Word quiz", questions: make(), returnTo: "practice", doneLabel: "Quiz done", again: make });
+  };
+  $("#g-roots").onclick = () => openExplorer(ctx, "practice");
   $("#review").onclick = () => ctx.startSession({ title: "Review", ids: due.slice(0, 30), mode: "review", returnTo: "practice" });
   $("#learn").onclick = () => ctx.startSession({ title: "New words", ids: fresh, mode: "learn", returnTo: "practice" });
   $("#tough").onclick = () => ctx.startSession({ title: "Tough words", ids: tough, mode: "practice", returnTo: "practice" });

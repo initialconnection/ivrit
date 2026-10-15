@@ -190,6 +190,33 @@ ul.ticks { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
 .word-preview .he { font-size: 1.9rem; }
 .trace { width: 100%; max-width: 600px; aspect-ratio: 3 / 2; border-radius: 12px; border: 1px solid var(--line); touch-action: none; cursor: crosshair; }
 
+/* ---- Roots ---- */
+.root-list { display: grid; }
+.root-row { appearance: none; background: none; border: 0; border-top: 1px solid var(--line); color: var(--fg); font: inherit; text-align: left; cursor: pointer;
+  display: grid; grid-template-columns: 5.5rem 1fr auto; gap: 4px 12px; align-items: center; padding: 12px 4px; }
+.root-row:first-child { border-top: 0; }
+.root-row:hover .root-main b { color: var(--accent); }
+.root-row:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 8px; }
+.root-row .bar { grid-column: 2 / -1; height: 6px; }
+.root-he { font-size: 1.4rem; grid-row: span 2; text-align: right; }
+.root-main { display: grid; min-width: 0; }
+.family-row { display: flex; justify-content: space-between; gap: 12px; align-items: center; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+.family-row:last-child { border-bottom: 0; }
+.family-row .he { color: var(--muted); margin-left: 6px; }
+
+/* ---- Games ---- */
+.games { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
+.match-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.match-col { display: grid; gap: 10px; align-content: start; }
+.tilebtn { appearance: none; cursor: pointer; border: 1.5px solid var(--line); border-radius: 12px; padding: 12px 8px; min-height: 56px; background: var(--surface); color: var(--fg); font: 600 1rem var(--body); overflow-wrap: anywhere; }
+.tilebtn .he { font-size: 1.4rem; font-weight: 400; }
+.tilebtn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.tilebtn.sel { border-color: var(--accent); background: var(--accent-soft); }
+.tilebtn.done { visibility: hidden; }
+.tilebtn.miss { border-color: var(--bad); background: var(--bad-soft); }
+.timer { font-family: var(--display); font-size: 1.4rem; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--accent); }
+.timer.low { color: var(--bad); }
+
 /* ---- Quiz ---- */
 .quiz { justify-items: stretch; text-align: center; }
 .quiz-prompt { font-size: 1.1rem; font-weight: 600; }
@@ -198,6 +225,10 @@ ul.ticks { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
 .opt { appearance: none; cursor: pointer; border: 1.5px solid var(--line); border-radius: 12px; padding: 14px 10px; background: var(--surface); color: var(--fg); font: 600 1.05rem var(--body); display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 58px; position: relative; }
 .opt kbd { position: absolute; left: 8px; top: 6px; font-size: .7rem; color: var(--muted); border: 0; background: none; padding: 0; }
 .opt .he { font-size: 2rem; font-weight: 400; line-height: 1; }
+.opt { flex-direction: column; gap: 2px; }
+.opt small { font-weight: 400; font-size: .85rem; color: var(--muted); }
+.opt small.he { font-size: 1.2rem; }
+.quiz-latin { font-family: var(--display); font-size: 1.5rem; font-weight: 500; }
 .opt:hover:not([disabled]) { border-color: var(--accent); }
 .opt:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 .opt[disabled] { cursor: default; }

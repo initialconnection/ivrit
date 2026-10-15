@@ -20,6 +20,8 @@ function blank() {
     letters: {},               // letter id -> same shape as items
     vowels: {},                // vowel id -> same shape as items
     alefbet: { done: [], ladder: {} }, // finished lesson ids; reading ladder rung -> { seen, right }
+    roots: {},                 // root id -> same shape as items (from root games)
+    best: {},                  // game -> best score
     settings: { dailyMinutes: 15, direction: "he-en", script: "tr" }
   };
 }

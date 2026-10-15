@@ -4,7 +4,7 @@ A Hebrew learning system for English speakers, starting in English letters (tran
 
 Live site: https://initialconnection.github.io/ivrit
 
-## What's in it now (Phases 1–2)
+## What's in it now (Phases 1–3)
 - Six tabs: Today, Lessons, Alef-Bet, Practice, Read, Progress
 - Flashcards with spaced repetition: every word has its own review schedule
 - Overall fluency score that rises with practice and slips when reviews are missed, with a comeback test
@@ -13,6 +13,8 @@ Live site: https://initialconnection.github.io/ivrit
 - Alef-Bet tab: 10 letter lessons covering all 22 letters, 5 final forms and 13 vowels
 - Letter and vowel progress grid, reading ladder, 7 drills, letter and vowel charts, tracing practice
 - Script switch: show words in English letters, Hebrew script, or both
+- 156 Aleph words in 8 topics, linked to 46 roots
+- Root explorer with word families, and games: matching pairs, speed round, word quiz, root families
 - Backup and restore of progress (saved in the browser)
 
 ## Project layout
